@@ -6,6 +6,7 @@ import pandas as pd #for data transformation before feeding data into model?
 app = FastAPI()
 
 nn_pipe = load('../models/nn_pipeline.joblib')
+nn_pipe.eval()
 
 @app.get("/")
 def read_root():
@@ -44,4 +45,4 @@ def architecture():
 #model.eval()
 #data = torch.randn(1, 3, 24, 24) # Load data here, this is just dummy data
 #output = model(data)
-#prediction = torch.argmax(output)
+#prediction = torch.argmax(output) #may need to add ', dim=1' after 'output'
