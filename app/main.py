@@ -3,7 +3,7 @@ from starlette.responses import JSONResponse
 from joblib import load #only if model was saved using joblib
 import pandas as pd #for data transformation before feeding data into model?
 
-app = FastAPI()
+#app = FastAPI()
 
 model = torch.load('../models/pytorch_beer_pred.pt')
 
@@ -15,6 +15,6 @@ def read_root():
 def healthcheck():
     return 'Beer prediction is all ready to go!'
 
-@app.get("/model/architecture")
-def architecture():
-   print(model)
+#@app.get("/model/architecture")
+#def architecture():
+ #  print(model)
