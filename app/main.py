@@ -47,10 +47,11 @@ def format_features(brewery_name: str, review_aroma: int, review_appearance: int
     }
 
 @app.get("/beer/type/")
-def predict(brewery_name: Optional[str]=None, review_aroma: Optional[int]=None, review_appearance: Optional[int]=None, review_palate: Optional[int]=None, review_taste: Optional[int]=None):
+def predict(brewery_name: str=None, review_aroma: int=None, review_appearance: int=None, review_palate: int=None, review_taste: int=None):
     features = format_features(brewery_name, review_aroma, review_appearance, review_palate, review_taste)
     obs = pd.DataFrame(features)
-    model = torch.load("../models/beer_pred.pt")
+    model = models.densenet121(pretrained=True)
+    #model = torch.load("../models/beer_pred.pt")
     pred = model.predict(obs)
     return JSONResponse(pred.tolist())
 
