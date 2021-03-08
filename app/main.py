@@ -37,7 +37,7 @@ def architecture():
     #model = torch.load("../models/beer_pred.pt")
     return model
 
-def format_features(review_aroma: int, review_appearance: int, review_palate: int, review_taste: int):
+def format_features(brewery_name: Optional[str]=None, review_aroma: Optional[int]=None, review_appearance: Optional[int]=None, review_palate: Optional[int]=None, review_taste: Optional[int]=None):
   return {
         'Brewery': [brewery_name],
         'Aroma (1-5)': [review_aroma],
