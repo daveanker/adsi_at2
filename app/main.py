@@ -6,8 +6,6 @@ import torch
 from torch import nn
 from torch.nn import functional as F
 
-app = FastAPI()
-
 class PytorchMultiClass(nn.Module):
     def __init__(self, num_features):
         super(PytorchMultiClass, self).__init__()
@@ -21,6 +19,8 @@ class PytorchMultiClass(nn.Module):
         x = self.layer_out(x)
         return self.softmax(x)
 
+app = FastAPI()
+
 @app.get("/")
 def read_root():
     return {"Hello": "World"}
@@ -31,10 +31,5 @@ def healthcheck():
 
 @app.get("/model/architecture")
 def architecture():
-
-    import torch
-
-    #model = PytorchMultiClass()
     model = torch.load("./models/beer_pred.pt")
-    #model.eval()
-    print(model)
+    return model
