@@ -1,8 +1,10 @@
 from fastapi import FastAPI
 from starlette.responses import JSONResponse
-from joblib import load #only if model was saved using joblib
-import pandas as pd #for data transformation before feeding data into model?
+#from joblib import load #only if model was saved using joblib
+import pandas as pd
 import torch
+import torchvision
+from torchvision import models
 from torch import nn
 from torch.nn import functional as F
 
@@ -31,5 +33,27 @@ def healthcheck():
 
 @app.get("/model/architecture")
 def architecture():
-    model = torch.load("./models/beer_pred.pt")
+    model = models.densenet121(pretrained=True)
+    #model = torch.load("../models/beer_pred.pt")
     return model
+
+def format_features(review_aroma: int, review_appearance: int, review_palate: int, review_taste: int):
+  return {
+        'Brewery': [brewery_name],
+        'Aroma (1-5)': [review_aroma],
+        'Appearance (1-5)': [review_appearance],
+        'Palate (1-5)': [review_palate],
+        'Taste (1-5)': [review_taste]
+    }
+
+@app.get("/beer/type/")
+def predict(brewery_name: str, review_aroma: int, review_appearance: int, review_palate: int, review_taste: int):
+    features = format_features(brewery_name, review_aroma, review_appearance, review_palate, review_taste)
+    obs = pd.DataFrame(features)
+    model = torch.load("../models/beer_pred.pt")
+    pred = model.predict(obs)
+    return JSONResponse(pred.tolist())
+
+#@app.get("/beers/type/")
+
+
