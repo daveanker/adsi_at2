@@ -5,6 +5,7 @@ import pandas as pd
 import torch
 import torchvision
 from torchvision import models
+from torchsummary import summary
 from torch import nn
 from torch.nn import functional as F
 from torch import Tensor
@@ -39,9 +40,9 @@ def healthcheck():
 
 @app.get("/model/architecture")
 def architecture():
-    model = models.densenet121(pretrained=True)
-    #model = torch.load("../models/beer_pred.pt", encoding='ascii')
-    return model
+    #model = models.densenet121(pretrained=True)
+    model = torch.load("../models/beer_pred.pt", encoding = 'ascii')
+    return summary(model)
 
 def format_features(brewery_name: str, review_aroma: int, review_appearance: int, review_palate: int, review_taste: int):
   return {
@@ -58,8 +59,8 @@ def predict(brewery_name: int=None, review_aroma: int=None, review_appearance: i
     # convert row to data
     features = Tensor([features])
     # make prediction
-    #model = torch.load("../models/beer_pred.pt")
-    model = models.densenet121(pretrained=True)
+    model = torch.load("../models/beer_pred.pt", encoding = 'ascii')
+    #model = models.densenet121(pretrained=True)
     yhat = model(features)
     # retrieve numpy array
     yhat = yhat.detach().numpy()
