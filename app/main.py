@@ -7,6 +7,8 @@ import torchvision
 from torchvision import models
 from torch import nn
 from torch.nn import functional as F
+from torch import Tensor
+from numpy import argmax
 
 class PytorchMultiClass(nn.Module):
     def __init__(self, num_features):
@@ -33,8 +35,8 @@ def healthcheck():
 
 @app.get("/model/architecture")
 def architecture():
-    model = models.densenet121(pretrained=True)
-    #model = torch.load("../models/beer_pred.pt")
+    #model = models.densenet121(pretrained=True)
+    model = torch.load("../models/beer_pred.pt")
     return model
 
 def format_features(brewery_name: str, review_aroma: int, review_appearance: int, review_palate: int, review_taste: int):
@@ -47,13 +49,17 @@ def format_features(brewery_name: str, review_aroma: int, review_appearance: int
     }
 
 @app.get("/beer/type/")
-def predict(brewery_name: str=None, review_aroma: int=None, review_appearance: int=None, review_palate: int=None, review_taste: int=None):
-    features = format_features(brewery_name, review_aroma, review_appearance, review_palate, review_taste)
-    obs = pd.DataFrame(features)
-    model = models.densenet121(pretrained=True)
-    #model = torch.load("../models/beer_pred.pt")
-    pred = model.predict(obs)
-    return JSONResponse(pred.tolist())
+def predict(brewery_name: int=None, review_aroma: int=None, review_appearance: int=None, review_palate: int=None, review_taste: int=None):
+    features = [brewery_name, review_aroma, review_appearance, review_palate, review_taste]
+    # convert row to data
+    features = Tensor([features])
+    # make prediction
+    model = torch.load("../models/beer_pred.pt")
+    yhat = model(features)
+    # retrieve numpy array
+    yhat = yhat.detach().numpy()
+    return argmax(yhat)
+    #return JSONResponse(pred.tolist())
 
 #@app.get("/beers/type/")
 
