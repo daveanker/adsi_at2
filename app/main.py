@@ -5,7 +5,7 @@ import pandas as pd
 import torch
 import torchvision
 from torchvision import models
-from torchsummary import summary
+#from torchsummary import summary
 from torch import nn
 from torch.nn import functional as F
 from torch import Tensor
@@ -42,7 +42,7 @@ def healthcheck():
 def architecture():
     #model = models.densenet121(pretrained=True)
     model = torch.load("../models/beer_pred.pt", encoding = 'ascii')
-    return summary(model)
+    return model
 
 def format_features(brewery_name: str, review_aroma: int, review_appearance: int, review_palate: int, review_taste: int):
   return {
