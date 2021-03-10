@@ -28,13 +28,6 @@ class PytorchMultiClass(nn.Module):
         x = self.layer_out(x)
         return self.softmax(x)
 
-def get_device():
-    if torch.cuda.is_available():
-        device = torch.device('cuda:0')
-    else:
-        device = torch.device('cpu') # don't have GPU 
-    return device
-
 app = FastAPI()
 
 @app.get("/")
@@ -48,7 +41,7 @@ def healthcheck():
 @app.get("/model/architecture")
 def architecture():
     #model = models.densenet121(pretrained=True)
-    model = torch.load("../models/beer_pred.pt", encoding = 'ascii').to(get_device())
+    model = torch.load("../models/beer_pred.pt", encoding = 'ascii')
     return summary(model, (1000,5))
 
 def format_features(brewery_name: str, review_aroma: int, review_appearance: int, review_palate: int, review_taste: int):
@@ -66,7 +59,7 @@ def predict(brewery_name: int=None, review_aroma: int=None, review_appearance: i
     # convert row to data
     features = Tensor([features])
     # make prediction
-    model = torch.load("../models/beer_pred.pt", encoding = 'ascii').to(get_device())
+    model = torch.load("../models/beer_pred.pt", encoding = 'ascii')
     #model = models.densenet121(pretrained=True)
     yhat = model(features)
     # retrieve numpy array
