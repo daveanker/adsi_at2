@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi import Query
 from starlette.responses import JSONResponse
 #from joblib import load
 import pandas as pd
@@ -32,16 +33,20 @@ app = FastAPI()
 
 @app.get("/")
 def read_root():
-    return {"Hello": "World"}
+    return 'Objectives: X'\
+    'Endpoints: '\
+    'Expected input parameters: '\
+    'Output format: '\
+    'Github repo: '
 
 @app.get('/health', status_code=200)
 def healthcheck():
-    return 'Beer prediction is all ready to go!'
+    return 'Beer prediction app is ready to go.'
 
 @app.get("/model/architecture")
 def architecture():
     #model = models.densenet121(pretrained=True)
-    model = torch.load("../models/beer_pred.pt", encoding = 'ascii')
+    model = torch.load("./models/beer_pred.pt")
     return summary(model, (1000,5))
 
 def format_features(brewery_name: str, review_aroma: int, review_appearance: int, review_palate: int, review_taste: int):
@@ -54,12 +59,17 @@ def format_features(brewery_name: str, review_aroma: int, review_appearance: int
     }
 
 @app.get("/beer/type/")
-def predict(brewery_name: int=None, review_aroma: int=None, review_appearance: int=None, review_palate: int=None, review_taste: int=None):
+def predict \
+    (brewery_name: int=Query(..., description='Brewery name'),
+    review_aroma: float=Query(..., description='Aroma score'),
+    review_appearance: float=Query(..., description='Appearance score'),
+    review_palate: float=Query(..., description='Palate score'),
+    review_taste: float=Query(..., description='Taste score')):
     features = [brewery_name, review_aroma, review_appearance, review_palate, review_taste]
     # convert row to data
     features = Tensor([features])
     # make prediction
-    model = torch.load("../models/beer_pred.pt", encoding = 'ascii')
+    model = torch.load("./models/beer_pred.pt")
     #model = models.densenet121(pretrained=True)
     yhat = model(features)
     # retrieve numpy array
@@ -68,5 +78,9 @@ def predict(brewery_name: int=None, review_aroma: int=None, review_appearance: i
     #return JSONResponse(pred.tolist())
 
 #@app.get("/beers/type/")
-
-
+#def predict \
+#    (brewery_name: List[int]=Query(..., description='Brewery name list'),
+#    review_aroma: List[float]=Query(..., description='Aroma score list'),
+#    review_appearance: List[float]=Query(..., description='Appearance score list'),
+#    review_palate: List[float]=Query(..., description='Palate score list'),
+#    review_taste: List[float]=Query(..., description='Taste score list')):
