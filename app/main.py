@@ -18,6 +18,7 @@ from src.models.pytorch import PytorchMultiClass
 
 app = FastAPI()
 model = torch.load('./models/beer_pred.pt')
+model.eval()
 
 @app.get("/")
 def read_root():
@@ -31,11 +32,11 @@ def read_root():
     return JSONResponse(project_description)
 
 @app.get("/health", status_code=200)
-def healthcheck():
+def health_check():
     return 'Beer prediction app is ready to go.'
 
 @app.post("/beer/type/")
-def predict \
+def predict_single \
     (brewery_name: str=Query(..., description='Brewery name'),
     review_aroma: float=Query(..., description='Aroma rating (1-5)'),
     review_appearance: float=Query(..., description='Appearance rating (1-5)'),
@@ -59,26 +60,26 @@ def predict \
     return JSONResponse(pred_name)
 
 @app.post("/beers/type/")
-def predict \
+def predict_multiple \
     (brewery_name: List[str]=Query(..., description='Brewery name list'),
     review_aroma: List[float]=Query(..., description='Aroma rating list (1-5)'),
     review_appearance: List[float]=Query(..., description='Appearance rating list (1-5)'),
     review_palate: List[float]=Query(..., description='Palate rating list (1-5)'),
     review_taste: List[float]=Query(..., description='Taste rating list (1-5)')):
 
-    input_df = pd.DataFrame({'brewery_name': [brewery_name],
-                       'review_aroma': [review_aroma],
-                       'review_appearance': [review_appearance],
-                       'review_palate': [review_palate],
-                       'review_taste': [review_taste]})
+    input_df = pd.DataFrame({'brewery_name': brewery_name,
+                       'review_aroma': review_aroma,
+                       'review_appearance': review_appearance,
+                       'review_palate': review_palate,
+                       'review_taste': review_taste})
 
-    pipe = load(f'./models/be_sc.joblib')
+    pipe = load('./models/be_sc.joblib')
     input_df = pipe.transform(input_df)
     df_tensor = torch.Tensor(np.array(input_df))
-    pred_num = model(df_tensor).argmax(1)
+    pred_nums = model(df_tensor).argmax(1)
     
-    le = load(f'./models/le.joblib')
-    pred_names = list(le.inverse_transform(pred_num.tolist()))
+    le = load('./models/le.joblib')
+    pred_names = list(le.inverse_transform(pred_nums.tolist()))
 
     return JSONResponse(pred_names)
 
@@ -95,7 +96,7 @@ class capturing(list):
         sys.stdout = self._stdout
 
 @app.get("/model/architecture")
-def architecture():
+def display_architecture():
     with capturing() as output:
         print(summary(model, (1000,18)))
     return output
