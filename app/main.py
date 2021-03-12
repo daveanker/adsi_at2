@@ -5,6 +5,7 @@ from joblib import load
 import pandas as pd
 import numpy as np
 from numpy import argmax
+from category_encoders.binary import BinaryEncoder
 from sklearn.preprocessing import StandardScaler
 import torch
 from torchsummary import summary
