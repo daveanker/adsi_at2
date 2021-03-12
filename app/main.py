@@ -23,10 +23,10 @@ model.eval()
 @app.get("/")
 def read_root():
     project_description = {
-        'Objectives': 'Objective is to...',
-        'Endpoints': 'X',
-        'Expected input parameters': 'X',
-        'Output format': 'X',
+        'Objectives': 'The objective of the project is to accurately predict a beer type based on brewery name and rating criteria (aroma, appearance, palate, taste).',
+        'Endpoints': '/ (GET): Overview, /health (GET): Health check, /beer/type (POST): Predict single beer, /beers/type (POST): Predict multiple beers, /model/architecture (GET): Display model architecture).',
+        'Expected input parameters': '/beer/type requires the following parameters: brewery_name (string), review_aroma (int), review_appearance (int), review_palate (int), review_taste (int). /beers/type requires the same parameters, each as a list.',
+        'Output format': 'Each endpoint prints a list or dictionary of results, with the exception of /model/architecture which prints saved output from the torchsummary package.',
         'Github repo': 'github.com/daveanker/adsi_at2' 
     }
     return JSONResponse(project_description)
@@ -38,10 +38,10 @@ def health_check():
 @app.post("/beer/type/")
 def predict_single \
     (brewery_name: str=Query(..., description='Brewery name'),
-    review_aroma: float=Query(..., description='Aroma rating (1-5)'),
-    review_appearance: float=Query(..., description='Appearance rating (1-5)'),
-    review_palate: float=Query(..., description='Palate rating (1-5)'),
-    review_taste: float=Query(..., description='Taste rating (1-5)')):
+    review_aroma: float=Query(..., description='Beer aroma rating (scale 1-5, in 0.5 increments)'),
+    review_appearance: float=Query(..., description='Beer appearance rating (scale 1-5, in 0.5 increments)'),
+    review_palate: float=Query(..., description='Beer palate rating (scale 1-5, in 0.5 increments)'),
+    review_taste: float=Query(..., description='Beer taste rating (scale 1-5, in 0.5 increments)')):
 
     input_df = pd.DataFrame({'brewery_name': [brewery_name],
                        'review_aroma': [review_aroma],
@@ -61,11 +61,11 @@ def predict_single \
 
 @app.post("/beers/type/")
 def predict_multiple \
-    ('Brewery name': List[str]=Query(..., description='Brewery name list'),
-    review_aroma: List[float]=Query(..., description='Aroma rating list (1-5)'),
-    review_appearance: List[float]=Query(..., description='Appearance rating list (1-5)'),
-    review_palate: List[float]=Query(..., description='Palate rating list (1-5)'),
-    review_taste: List[float]=Query(..., description='Taste rating list (1-5)')):
+    (brewery_name: List[str]=Query(..., description='List of beer brewery names'),
+    review_aroma: List[float]=Query(..., description='List of beer aroma ratings (scale 1-5, in 0.5 increments)'),
+    review_appearance: List[float]=Query(..., description='List of beer appearance ratings (scale 1-5, in 0.5 increments)'),
+    review_palate: List[float]=Query(..., description='List of beer palate ratings (scale 1-5, in 0.5 increments)'),
+    review_taste: List[float]=Query(..., description='List of beer taste ratings (scale 1-5, in 0.5 increments)')):
 
     input_df = pd.DataFrame({'brewery_name': brewery_name,
                        'review_aroma': review_aroma,
