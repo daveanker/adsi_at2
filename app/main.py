@@ -8,13 +8,10 @@ from numpy import argmax
 from category_encoders.binary import BinaryEncoder
 from sklearn.preprocessing import StandardScaler
 import torch
-from torchsummary import summary
-from torch import nn
-from torch.nn import functional as F
 from torch import Tensor
-from io import StringIO
-import sys
+from torchsummary import summary
 from src.models.pytorch import PytorchMultiClass
+from src.utils.misc import capture
 
 app = FastAPI()
 model = torch.load('./models/beer_pred.pt')
@@ -49,8 +46,8 @@ def predict_single \
                        'review_palate': [review_palate],
                        'review_taste': [review_taste]})
     
-    pipe = load('./models/be_sc.joblib')
-    input_df = pipe.transform(input_df)
+    be_sc = load('./models/be_sc.joblib')
+    input_df = be_sc.transform(input_df)
     df_tensor = torch.Tensor(np.array(input_df))
     pred_num = model(df_tensor).argmax(1)
     
@@ -73,8 +70,8 @@ def predict_multiple \
                        'review_palate': review_palate,
                        'review_taste': review_taste})
 
-    pipe = load('./models/be_sc.joblib')
-    input_df = pipe.transform(input_df)
+    be_sc = load('./models/be_sc.joblib')
+    input_df = be_sc.transform(input_df)
     df_tensor = torch.Tensor(np.array(input_df))
     pred_nums = model(df_tensor).argmax(1)
     
@@ -83,20 +80,8 @@ def predict_multiple \
 
     return JSONResponse(pred_names)
 
-# Function to capture print() output for model architecture
-# Source: https://stackoverflow.com/questions/16571150/how-to-capture-stdout-output-from-a-python-function-call
-class capturing(list):
-    def __enter__(self):
-        self._stdout = sys.stdout
-        sys.stdout = self._stringio = StringIO()
-        return self
-    def __exit__(self, *args):
-        self.extend(self._stringio.getvalue().splitlines())
-        del self._stringio
-        sys.stdout = self._stdout
-
 @app.get("/model/architecture")
 def display_architecture():
-    with capturing() as output:
+    with capture() as output:
         print(summary(model, (1000,18)))
     return output
