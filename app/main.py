@@ -21,11 +21,14 @@ model = torch.load('./models/beer_pred.pt')
 
 @app.get("/")
 def read_root():
-    return 'Objectives: X'\
-    'Endpoints: '\
-    'Expected input parameters: '\
-    'Output format: '\
-    'Github repo: '
+    project_description = {
+        'Objectives': 'Objective is to...',
+        'Endpoints': 'X',
+        'Expected input parameters': 'X',
+        'Output format': 'X',
+        'Github repo': 'github.com/daveanker/adsi_at2' 
+    }
+    return JSONResponse(project_description)
 
 @app.get("/health", status_code=200)
 def healthcheck():
@@ -34,10 +37,10 @@ def healthcheck():
 @app.post("/beer/type/")
 def predict \
     (brewery_name: str=Query(..., description='Brewery name'),
-    review_aroma: float=Query(..., description='Aroma score'),
-    review_appearance: float=Query(..., description='Appearance score'),
-    review_palate: float=Query(..., description='Palate score'),
-    review_taste: float=Query(..., description='Taste score')):
+    review_aroma: float=Query(..., description='Aroma rating (1-5)'),
+    review_appearance: float=Query(..., description='Appearance rating (1-5)'),
+    review_palate: float=Query(..., description='Palate rating (1-5)'),
+    review_taste: float=Query(..., description='Taste rating (1-5)')):
 
     input_df = pd.DataFrame({'brewery_name': [brewery_name],
                        'review_aroma': [review_aroma],
@@ -65,7 +68,7 @@ def predict \
 
 # Function to capture print() output for model architecture
 # Source: https://stackoverflow.com/questions/16571150/how-to-capture-stdout-output-from-a-python-function-call
-class Capturing(list):
+class capturing(list):
     def __enter__(self):
         self._stdout = sys.stdout
         sys.stdout = self._stringio = StringIO()
@@ -77,6 +80,6 @@ class Capturing(list):
 
 @app.get("/model/architecture")
 def architecture():
-    with Capturing() as output:
+    with capturing() as output:
         print(summary(model, (1000,18)))
     return output
