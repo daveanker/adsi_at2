@@ -35,7 +35,7 @@ def architecture():
 
 @app.get("/beer/type/")
 def predict \
-    (brewery_name: int=Query(..., description='Brewery name'),
+    (brewery_name: str=Query(..., description='Brewery name'),
     review_aroma: float=Query(..., description='Aroma score'),
     review_appearance: float=Query(..., description='Appearance score'),
     review_palate: float=Query(..., description='Palate score'),
