@@ -55,16 +55,32 @@ def predict \
     
     le = load('./models/le.joblib')
     pred_name = le.inverse_transform(pred_num.tolist())[0]
-    pred_name
+
     return JSONResponse(pred_name)
 
-#@app.post("/beers/type/")
-#def predict \
-#    (brewery_name: List[int]=Query(..., description='Brewery name list'),
-#    review_aroma: List[float]=Query(..., description='Aroma score list'),
-#    review_appearance: List[float]=Query(..., description='Appearance score list'),
-#    review_palate: List[float]=Query(..., description='Palate score list'),
-#    review_taste: List[float]=Query(..., description='Taste score list')):
+@app.post("/beers/type/")
+def predict \
+    (brewery_name: List[str]=Query(..., description='Brewery name list'),
+    review_aroma: List[float]=Query(..., description='Aroma rating list (1-5)'),
+    review_appearance: List[float]=Query(..., description='Appearance rating list (1-5)'),
+    review_palate: List[float]=Query(..., description='Palate rating list (1-5)'),
+    review_taste: List[float]=Query(..., description='Taste rating list (1-5)')):
+
+    input_df = pd.DataFrame({'brewery_name': [brewery_name],
+                       'review_aroma': [review_aroma],
+                       'review_appearance': [review_appearance],
+                       'review_palate': [review_palate],
+                       'review_taste': [review_taste]})
+
+    pipe = load(f'./models/be_sc.joblib')
+    input_df = pipe.transform(input_df)
+    df_tensor = torch.Tensor(np.array(input_df))
+    pred_num = model(df_tensor).argmax(1)
+    
+    le = load(f'./models/le.joblib')
+    pred_names = list(le.inverse_transform(pred_num.tolist()))
+
+    return JSONResponse(pred_names)
 
 # Function to capture print() output for model architecture
 # Source: https://stackoverflow.com/questions/16571150/how-to-capture-stdout-output-from-a-python-function-call
