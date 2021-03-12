@@ -61,7 +61,7 @@ def predict_single \
 
 @app.post("/beers/type/")
 def predict_multiple \
-    (brewery_name: List[str]=Query(..., description='Brewery name list'),
+    ('Brewery name': List[str]=Query(..., description='Brewery name list'),
     review_aroma: List[float]=Query(..., description='Aroma rating list (1-5)'),
     review_appearance: List[float]=Query(..., description='Appearance rating list (1-5)'),
     review_palate: List[float]=Query(..., description='Palate rating list (1-5)'),
