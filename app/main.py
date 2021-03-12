@@ -12,6 +12,8 @@ from torchsummary import summary
 from torch import nn
 from torch.nn import functional as F
 from torch import Tensor
+from io import StringIO
+import sys
 from src.models.pytorch import PytorchMultiClass
 
 app = FastAPI()
@@ -29,11 +31,7 @@ def read_root():
 def healthcheck():
     return 'Beer prediction app is ready to go.'
 
-@app.get("/model/architecture")
-def architecture():
-    return summary(model, (1000, 18))
-
-@app.get("/beer/type/")
+@app.post("/beer/type/")
 def predict \
     (brewery_name: str=Query(..., description='Brewery name'),
     review_aroma: float=Query(..., description='Aroma score'),
@@ -57,10 +55,28 @@ def predict \
     pred_name
     return JSONResponse(pred_name)
 
-#@app.get("/beers/type/")
+#@app.post("/beers/type/")
 #def predict \
 #    (brewery_name: List[int]=Query(..., description='Brewery name list'),
 #    review_aroma: List[float]=Query(..., description='Aroma score list'),
 #    review_appearance: List[float]=Query(..., description='Appearance score list'),
 #    review_palate: List[float]=Query(..., description='Palate score list'),
 #    review_taste: List[float]=Query(..., description='Taste score list')):
+
+# Function to capture print() output for model architecture
+# Source: https://stackoverflow.com/questions/16571150/how-to-capture-stdout-output-from-a-python-function-call
+class Capturing(list):
+    def __enter__(self):
+        self._stdout = sys.stdout
+        sys.stdout = self._stringio = StringIO()
+        return self
+    def __exit__(self, *args):
+        self.extend(self._stringio.getvalue().splitlines())
+        del self._stringio
+        sys.stdout = self._stdout
+
+@app.get("/model/architecture")
+def architecture():
+    with Capturing() as output:
+        print(summary(model, (1000,18)))
+    return output
