@@ -13,7 +13,7 @@ from torch import nn
 from torch.nn import functional as F
 from torch import Tensor
 from src.models.pytorch import PytorchMultiClass
-from src.models.pytorch import get_device
+#from src.models.pytorch import get_device
 
 app = FastAPI()
 model = torch.load('./models/beer_pred.pt')
