@@ -1,35 +1,21 @@
-from fastapi import FastAPI
-from fastapi import Query
+from fastapi import FastAPI, Query
+from typing import List
 from starlette.responses import JSONResponse
-#from joblib import load
+from joblib import load
 import pandas as pd
+import numpy as np
+from numpy import argmax
+from sklearn.preprocessing import StandardScaler
 import torch
-import torchvision
-from torchvision import models
 from torchsummary import summary
 from torch import nn
 from torch.nn import functional as F
 from torch import Tensor
-from numpy import argmax
-
-class PytorchMultiClass(nn.Module):
-    def __init__(self, num_features):
-        super(PytorchMultiClass, self).__init__()
-        
-        self.layer_1 = nn.Linear(num_features, 32)
-        self.layer_2 = nn.Linear(32,16)
-        self.layer_3 = nn.Linear(16,8)
-        self.layer_out = nn.Linear(8, 104)
-        self.softmax = nn.Softmax(dim=1)
-
-    def forward(self, x):
-        x = F.dropout(F.relu(self.layer_1(x)), training=self.training)
-        x = F.dropout(F.relu(self.layer_2(x)), training=self.training)
-        x = F.dropout(F.relu(self.layer_3(x)), training=self.training)
-        x = self.layer_out(x)
-        return self.softmax(x)
+from src.models.pytorch import PytorchMultiClass
+from src.models.pytorch import get_device
 
 app = FastAPI()
+model = torch.load('./models/beer_pred.pt')
 
 @app.get("/")
 def read_root():
@@ -39,24 +25,13 @@ def read_root():
     'Output format: '\
     'Github repo: '
 
-@app.get('/health', status_code=200)
+@app.get("/health", status_code=200)
 def healthcheck():
     return 'Beer prediction app is ready to go.'
 
 @app.get("/model/architecture")
 def architecture():
-    #model = models.densenet121(pretrained=True)
-    model = torch.load("./models/beer_pred.pt")
-    return summary(model, (1000,5))
-
-def format_features(brewery_name: str, review_aroma: int, review_appearance: int, review_palate: int, review_taste: int):
-  return {
-        'Brewery': [brewery_name],
-        'Aroma (1-5)': [review_aroma],
-        'Appearance (1-5)': [review_appearance],
-        'Palate (1-5)': [review_palate],
-        'Taste (1-5)': [review_taste]
-    }
+    return summary(model, (1000, 18))
 
 @app.get("/beer/type/")
 def predict \
@@ -65,17 +40,22 @@ def predict \
     review_appearance: float=Query(..., description='Appearance score'),
     review_palate: float=Query(..., description='Palate score'),
     review_taste: float=Query(..., description='Taste score')):
-    features = [brewery_name, review_aroma, review_appearance, review_palate, review_taste]
-    # convert row to data
-    features = Tensor([features])
-    # make prediction
-    model = torch.load("./models/beer_pred.pt")
-    #model = models.densenet121(pretrained=True)
-    yhat = model(features)
-    # retrieve numpy array
-    yhat = yhat.detach().numpy()
-    return argmax(yhat)
-    #return JSONResponse(pred.tolist())
+
+    input_df = pd.DataFrame({'brewery_name': [brewery_name],
+                       'review_aroma': [review_aroma],
+                       'review_appearance': [review_appearance],
+                       'review_palate': [review_palate],
+                       'review_taste': [review_taste]})
+    
+    pipe = load('./models/be_sc.joblib')
+    input_df = pipe.transform(input_df)
+    df_tensor = torch.Tensor(np.array(input_df))
+    pred_num = model(df_tensor).argmax(1)
+    
+    le = load('./models/le.joblib')
+    pred_name = le.inverse_transform(pred_num.tolist())[0]
+    pred_name
+    return JSONResponse(pred_name)
 
 #@app.get("/beers/type/")
 #def predict \
