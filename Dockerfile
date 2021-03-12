@@ -12,4 +12,4 @@ COPY ./src /src
 
 CMD ["gunicorn", "-k", "uvicorn.workers.UvicornWorker", "-c", "/gunicorn_conf.py", "main:app"]
 
-WORKDIR /app
+WORKDIR /
