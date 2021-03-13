@@ -1,4 +1,6 @@
+# Function to capture 'print' output
 # Source: https://stackoverflow.com/questions/16571150/how-to-capture-stdout-output-from-a-python-function-call
+
 import sys
 from io import StringIO
 

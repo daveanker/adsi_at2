@@ -14,7 +14,7 @@ from src.models.pytorch import PytorchMultiClass
 from src.utils.misc import capture
 
 app = FastAPI()
-model = torch.load('./models/beer_pred.pt')
+model = torch.load('./models/beer_pred_gpu.pt')
 model.eval()
 
 @app.get("/")
@@ -48,8 +48,8 @@ def predict_single \
     
     be_sc = load('./models/be_sc.joblib')
     input_df = be_sc.transform(input_df)
-    df_tensor = torch.Tensor(np.array(input_df))
-    pred_num = model(df_tensor).argmax(1)
+    input_tensor = torch.Tensor(np.array(input_df))
+    pred_num = model(input_tensor).argmax(1)
     
     le = load('./models/le.joblib')
     pred_name = le.inverse_transform(pred_num.tolist())[0]
@@ -72,8 +72,8 @@ def predict_multiple \
 
     be_sc = load('./models/be_sc.joblib')
     input_df = be_sc.transform(input_df)
-    df_tensor = torch.Tensor(np.array(input_df))
-    pred_nums = model(df_tensor).argmax(1)
+    input_tensor = torch.Tensor(np.array(input_df))
+    pred_nums = model(input_tensor).argmax(1)
     
     le = load('./models/le.joblib')
     pred_names = list(le.inverse_transform(pred_nums.tolist()))

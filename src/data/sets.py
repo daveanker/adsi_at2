@@ -1,16 +1,27 @@
+import numpy as np
+import os.path
+
 def subset_x_y(target, features, start_index:int, end_index:int):
-    return features[start_index:end_index], target[start_index:end_index]
-
-def split_sets_by_time(df, target_col, test_ratio=0.2):
-    df_copy = df.copy()
-    target = df_copy.pop(target_col)
-    cutoff = int(len(target) / 5)
+    """Keep only the rows for X and y sets from the specified indexes
+    Parameters
+    ----------
+    target : pd.DataFrame
+        Dataframe containing the target
+    features : pd.DataFrame
+        Dataframe containing all features
+    features : int
+        Index of the starting observation
+    features : int
+        Index of the ending observation
+    Returns
+    -------
+    pd.DataFrame
+        Subsetted Pandas dataframe containing the target
+    pd.DataFrame
+        Subsetted Pandas dataframe containing all features
+    """
     
-    X_train, y_train = subset_x_y(target=target, features=df_copy, start_index=0, end_index=-cutoff*2)
-    X_val, y_val     = subset_x_y(target=target, features=df_copy, start_index=-cutoff*2, end_index=-cutoff)
-    X_test, y_test   = subset_x_y(target=target, features=df_copy, start_index=-cutoff, end_index=len(target))
-
-    return X_train, y_train, X_val, y_val, X_test, y_test
+    return features[start_index:end_index], target[start_index:end_index]
 
 def split_sets_random(df, target_col, test_ratio=0.2, to_numpy=False):
     """Split sets randomly
