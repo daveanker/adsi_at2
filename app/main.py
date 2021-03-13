@@ -84,5 +84,5 @@ def predict_multiple \
 def display_architecture():
     with capture() as output:
         print(model)
-        #print(summary(model, (1000,18)))
+        ##print(summary(model, (1000,18)))
     return output
