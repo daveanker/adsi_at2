@@ -83,5 +83,6 @@ def predict_multiple \
 @app.get("/model/architecture")
 def display_architecture():
     with capture() as output:
-        print(summary(model, (1000,18)))
+        print(model)
+        #print(summary(model, (1000,18)))
     return output
