@@ -1,4 +1,4 @@
-# Function to capture 'print' output
+# Function to capture 'print' output for Heroku app
 # Source: https://stackoverflow.com/questions/16571150/how-to-capture-stdout-output-from-a-python-function-call
 
 import sys

@@ -14935,9 +14935,9 @@ memory usage: 157.4+ MB
 
 
 
-<div id="252abd7b-7267-4610-a814-476007f93319" class="jupyter-widgets jp-OutputArea-output ">
+<div id="3e82f34b-2f01-4287-af29-11decf1ef509" class="jupyter-widgets jp-OutputArea-output ">
 <script type="text/javascript">
-var element = document.getElementById('252abd7b-7267-4610-a814-476007f93319');
+var element = document.getElementById('3e82f34b-2f01-4287-af29-11decf1ef509');
 </script>
 <script type="application/vnd.jupyter.widget-view+json">
 {"model_id": "70463d5dbd3b42478fc859462eb50850", "version_major": 2, "version_minor": 0}
@@ -14957,9 +14957,9 @@ var element = document.getElementById('252abd7b-7267-4610-a814-476007f93319');
 
 
 
-<div id="56300b91-78b5-4cd2-9404-a51f08436f50" class="jupyter-widgets jp-OutputArea-output ">
+<div id="cecd6e24-234c-4a84-930b-69106f24a19d" class="jupyter-widgets jp-OutputArea-output ">
 <script type="text/javascript">
-var element = document.getElementById('56300b91-78b5-4cd2-9404-a51f08436f50');
+var element = document.getElementById('cecd6e24-234c-4a84-930b-69106f24a19d');
 </script>
 <script type="application/vnd.jupyter.widget-view+json">
 {"model_id": "769c573a2f5d4e65834ffe25a843c1a8", "version_major": 2, "version_minor": 0}
@@ -14979,9 +14979,9 @@ var element = document.getElementById('56300b91-78b5-4cd2-9404-a51f08436f50');
 
 
 
-<div id="24575ae0-5cd0-4b59-b0bd-6482cf7a0983" class="jupyter-widgets jp-OutputArea-output ">
+<div id="b3fb3ecc-0d5f-4329-9e9c-ebb7a5bfc00a" class="jupyter-widgets jp-OutputArea-output ">
 <script type="text/javascript">
-var element = document.getElementById('24575ae0-5cd0-4b59-b0bd-6482cf7a0983');
+var element = document.getElementById('b3fb3ecc-0d5f-4329-9e9c-ebb7a5bfc00a');
 </script>
 <script type="application/vnd.jupyter.widget-view+json">
 {"model_id": "c478399eb1de41368fc081fcb0b7f36a", "version_major": 2, "version_minor": 0}
@@ -15001,9 +15001,9 @@ var element = document.getElementById('24575ae0-5cd0-4b59-b0bd-6482cf7a0983');
 
 
 
-<div id="300782b3-77c4-436c-95e8-b11565d5a11c" class="jupyter-widgets jp-OutputArea-output ">
+<div id="057a006e-c933-45f2-8b21-2f6c7890326f" class="jupyter-widgets jp-OutputArea-output ">
 <script type="text/javascript">
-var element = document.getElementById('300782b3-77c4-436c-95e8-b11565d5a11c');
+var element = document.getElementById('057a006e-c933-45f2-8b21-2f6c7890326f');
 </script>
 <script type="application/vnd.jupyter.widget-view+json">
 {"model_id": "66595aef9616499083884c9b808e1fd5", "version_major": 2, "version_minor": 0}
@@ -17042,13 +17042,11 @@ Name: beer_style, Length: 1561390, dtype: object</pre>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">src.utils.misc</span> <span class="kn">import</span> <span class="n">capture</span>
-<span class="c1">#from torchsummary import summary</span>
 
 <span class="n">model</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;./models/beer_pred_cpu.pt&quot;</span><span class="p">)</span>
 
 <span class="k">def</span> <span class="nf">display_architecture</span><span class="p">():</span>
     <span class="k">with</span> <span class="n">capture</span><span class="p">()</span> <span class="k">as</span> <span class="n">output</span><span class="p">:</span>
-        <span class="c1">#print(summary(model, input_size=(1000,18)))</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">output</span>
 

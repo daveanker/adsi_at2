@@ -1,7 +1,8 @@
 adsi_at2
 ==============================
 
-Beer prediction using custom neural network
+Beer prediction using custom Pytorch neural network, and model deployment to Heroku using FastAPI.  
+Predictions are based on user input for brewery name and a range of input scores for aroma, appearance, palate and taste. 
 
 Project Organization
 ------------
@@ -10,14 +11,15 @@ Project Organization
     ├── Makefile           <- Makefile with commands like `make data` or `make train`
     ├── README.md          <- The top-level README for developers using this project.
     ├── data
-    │   ├── external       <- Data from third party sources.
     │   ├── interim        <- Intermediate data that has been transformed.
     │   ├── processed      <- The final, canonical data sets for modeling.
     │   └── raw            <- The original, immutable data dump.
     │
-    ├── docs               <- A default Sphinx project; see sphinx-doc.org for details
+    ├── app                <- Folder for app deployment
+    │   ├── main.py        <- Script for app deployment
     │
     ├── models             <- Trained and serialized models, model predictions, or model summaries
+    │   ├── checkpoints    <- Save model checkpoints to resume further training (if required)
     │
     ├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
     │                         the creator's initials, and a short `-` delimited description, e.g.
@@ -26,8 +28,11 @@ Project Organization
     ├── references         <- Data dictionaries, manuals, and all other explanatory materials.
     │
     ├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
-    │   └── figures        <- Generated graphics and figures to be used in reporting
     │
+    ├── Dockerfile         <- List of commands to assemble Docker image
+    │    
+    ├── heroku.yml         <- Manifest to define Heroku app
+    │    
     ├── requirements.txt   <- The requirements file for reproducing the analysis environment, e.g.
     │                         generated with `pip freeze > requirements.txt`
     │
@@ -36,18 +41,16 @@ Project Organization
     │   ├── __init__.py    <- Makes src a Python module
     │   │
     │   ├── data           <- Scripts to download or generate data
-    │   │   └── make_dataset.py
-    │   │
-    │   ├── features       <- Scripts to turn raw data into features for modeling
-    │   │   └── build_features.py
+    │   │   └── sets.py
     │   │
     │   ├── models         <- Scripts to train models and then use trained models to make
     │   │   │                 predictions
-    │   │   ├── predict_model.py
-    │   │   └── train_model.py
+    │   │   ├── null.py
+    │   │   └── performance.py
+    │   │   └── pytorch.py       
     │   │
-    │   └── visualization  <- Scripts to create exploratory and results oriented visualizations
-    │       └── visualize.py
+    │   └── utils          <- 'Helper' scripts
+    │       └── misc.py
     │
     └── tox.ini            <- tox file with settings for running tox; see tox.readthedocs.io
 
