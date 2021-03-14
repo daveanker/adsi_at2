@@ -22,7 +22,7 @@ def read_root():
         'Objectives': 'The objective of the project is to accurately predict a beer type based on brewery name and rating criteria (aroma, appearance, palate, taste).',
         'Endpoints': '/ (GET): Overview, /health (GET): Health check, /beer/type (POST): Predict single beer, /beers/type (POST): Predict multiple beers, /model/architecture (GET): Display model architecture).',
         'Expected input parameters': '/beer/type requires the following parameters: brewery_name (string), review_aroma (int), review_appearance (int), review_palate (int), review_taste (int). /beers/type requires the same parameters, each as a list.',
-        'Output format': 'Each endpoint prints a list or dictionary of results, with the exception of /model/architecture which prints saved output from the torchsummary package.',
+        'Output format': 'Each endpoint prints a list or dictionary of results, with the exception of /model/architecture which prints stored stdout from the print(model) command.',
         'Github repo': 'github.com/daveanker/adsi_at2' 
     }
     return JSONResponse(project_description)
@@ -81,4 +81,6 @@ def predict_multiple \
 
 @app.get("/model/architecture")
 def display_architecture():
-    print(model)
+    with capture() as output:
+        print(model)
+    return output
