@@ -9,7 +9,6 @@ from category_encoders.binary import BinaryEncoder
 from sklearn.preprocessing import StandardScaler
 import torch
 from torch import Tensor
-from torchsummary import summary
 from src.models.pytorch import PytorchMultiClass
 from src.utils.misc import capture
 
@@ -82,7 +81,4 @@ def predict_multiple \
 
 @app.get("/model/architecture")
 def display_architecture():
-    with capture() as output:
-        print(model)
-        ##print(summary(model, (1000,18)))
-    return output
+    print(model)
