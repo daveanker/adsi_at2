@@ -13,7 +13,7 @@ from src.models.pytorch import PytorchMultiClass
 from src.utils.misc import capture
 
 app = FastAPI()
-model = torch.load('./models/beer_pred_gpu.pt')
+model = torch.load('./models/beer_pred_cpu.pt')
 model.eval()
 
 @app.get("/")
